@@ -46,7 +46,7 @@ To install the macros first clone this repository inside of your
 `klipper_config` directory like so.
 
 ```
-git clone https://github.com/jschuh/klipper-macros.git
+git clone https://github.com/fludstank/klipper-macros.git
 ```
 
 Then paste the below section into your `printer.cfg` to get started.
@@ -125,7 +125,7 @@ automatically update directly from this repo.
 ```
 [update_manager klipper-macros]
 type: git_repo
-origin: https://github.com/jschuh/klipper-macros.git
+origin: https://github.com/fludstank/klipper-macros.git
 path: ~/klipper_config/klipper-macros
 primary_branch: main
 is_system_service: False
