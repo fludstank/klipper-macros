@@ -72,12 +72,12 @@ overridden by creating a corresponding variable with a new value in your
 # Length (in mm) of filament to load (bowden tubes will be longer).
 #variable_load_length: 90.0
 # Hide the Octoprint LCD menu since I don't use it.
-#variable_menu_show_octoprint: 0
+variable_menu_show_octoprint: 0
 # Customize the filament menus (up to 10 entries).
 #variable_menu_temperature: [
-#  {'name' : 'PLA',  'extruder' : 200.0, 'bed' : 60.0},
-#  {'name' : 'PETG', 'extruder' : 230.0, 'bed' : 85.0},
-#  {'name' : 'ABS',  'extruder' : 245.0, 'bed' : 110.0, 'chamber' : 60}]
+  {'name' : 'PLA',  'extruder' : 210.0, 'bed' : 63.0},
+  {'name' : 'PETG', 'extruder' : 240.0, 'bed' : 85.0},
+  {'name' : 'ABS',  'extruder' : 245.0, 'bed' : 110.0, 'chamber' : 60}]
 gcode: # This line is required by Klipper.
 # Any code you put here will run at klipper startup, after the initialization
 # for these macros. For example, you could uncomment the following line to
