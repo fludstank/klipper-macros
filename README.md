@@ -74,7 +74,7 @@ overridden by creating a corresponding variable with a new value in your
 # Hide the Octoprint LCD menu since I don't use it.
 variable_menu_show_octoprint: 0
 # Customize the filament menus (up to 10 entries).
-#variable_menu_temperature: [
+variable_menu_temperature: [
   {'name' : 'PLA',  'extruder' : 210.0, 'bed' : 63.0},
   {'name' : 'PETG', 'extruder' : 240.0, 'bed' : 85.0},
   {'name' : 'ABS',  'extruder' : 245.0, 'bed' : 110.0, 'chamber' : 60}]
