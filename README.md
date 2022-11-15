@@ -83,7 +83,7 @@ gcode: # This line is required by Klipper.
 # for these macros. For example, you could uncomment the following line to
 # automatically adjust your bed surface offsets to account for any changes made
 # to your Z endstop or probe offset.
-#  ADJUST_SURFACE_OFFSETS
+ADJUST_SURFACE_OFFSETS
 
 # This line includes all the standard macros.
 [include klipper-macros/*.cfg]
@@ -91,7 +91,7 @@ gcode: # This line is required by Klipper.
 # LCD menu support for features like bed surface selection and pause next layer.
 #[include klipper-macros/optional/lcd_menus.cfg]
 # Optimized bed leveling
-#[include klipper-macros/optional/bed_mesh.cfg]
+[include klipper-macros/optional/bed_mesh.cfg]
 
 # The sections below here are required for the macros to work.
 [idle_timeout]
