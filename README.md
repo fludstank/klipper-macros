@@ -42,8 +42,8 @@ with g-code targeting Marlin printers. However, there are also some nice extras:
 
 # Installation
 
-To install the macros first clone this repository inside of your
-`~/printer_data/config` directory like so.
+To install the macros, first clone this repository inside of your
+`printer_data/config` directory with the following command.
 
 ```
 git clone https://github.com/fludstank/klipper-macros.git
@@ -53,6 +53,10 @@ Then paste the below section into your `printer.cfg` to get started.
 The settings are all listed in [globals.cfg](globals.cfg#L5), and can be
 overridden by creating a corresponding variable with a new value in your
 `[gcode_macro _km_options]` section.
+
+> **Note:** The paths in this README follow [Moonraker's data folder structure.
+> ](https://moonraker.readthedocs.io/en/latest/installation/#data-folder-structure)
+> You may need to change them if you are using a different structure.
 
 > **Note:** If you have a `[homing_override]` section you will need to update any
 > `G28` commands in that section to use to `G28.6245197` instead (which is the
@@ -72,7 +76,7 @@ overridden by creating a corresponding variable with a new value in your
 # Length (in mm) of filament to load (bowden tubes will be longer).
 #variable_load_length: 90.0
 # Hide the Octoprint LCD menu since I don't use it.
-variable_menu_show_octoprint: 0
+#variable_menu_show_octoprint: False
 # Customize the filament menus (up to 10 entries).
 variable_menu_temperature: [
   {'name' : 'PLA',  'extruder' : 210.0, 'bed' : 63.0},
@@ -126,7 +130,7 @@ automatically update directly from this repo.
 [update_manager klipper-macros]
 type: git_repo
 origin: https://github.com/fludstank/klipper-macros.git
-path: ~/printer_data/config/klipper-macros
+path: ~/printer_data/config/klipper-macros  # UPDATE THIS FOR YOUR PATH!!!
 primary_branch: main
 is_system_service: False
 managed_services: klipper
