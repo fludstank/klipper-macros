@@ -29,6 +29,11 @@ with g-code targeting Marlin printers. However, there are also some nice extras:
 - **[Optimized mesh bed leveling](#bed-mesh-improvements)** - Probes only within
   the printed area, which can save a lot of time on smaller prints.
 
+* **[Automated purge lines](#draw_purge_line)** - Set the desired extrusion
+  length as `variable_start_purge_length` in your config and a correctly sized
+  set of purge lines will be extruded in front of the print area immediately
+  before the print starts.
+
 ## A few warnings...
 
 - You must have a `heater_bed`, `extruder`, and other [sections listed
@@ -149,8 +154,11 @@ into the relevant sections.
 ```
 M190 S0
 M109 S0
-PRINT_START EXTRUDER={first_layer_temperature[initial_tool]} BED=[first_layer_bed_temperature] MESH_MIN={first_layer_print_min[0]},{first_layer_print_min[1]} MESH_MAX={first_layer_print_max[0]},{first_layer_print_max[1]} LAYERS={total_layer_count}
-; Any purge, intro lines, etc. go after this...
+PRINT_START EXTRUDER={first_layer_temperature[initial_tool]} BED=[first_layer_bed_temperature] MESH_MIN={first_layer_print_min[0]},{first_layer_print_min[1]} MESH_MAX={first_layer_print_max[0]},{first_layer_print_max[1]} LAYERS={total_layer_count} NOZZLE_SIZE={nozzle_diameter[0]}
+
+; This is the place to put slicer purge lines if you haven't set a non-zero
+; variable_start_purge_length to have START_PRINT automatically purge (e.g. if
+; using a Mosaic Palette, which requires the slicer to generate the purge).
 ```
 
 #### End G-code
@@ -208,8 +216,11 @@ configuration steps listed below.
 ```
 M190 S0
 M109 S0
-PRINT_START EXTRUDER={material_print_temperature_layer_0} BED={material_bed_temperature_layer_0}
-; Any purge, intro lines, etc. go after this...
+PRINT_START EXTRUDER={material_print_temperature_layer_0} BED={material_bed_temperature_layer_0} NOZZLE_SIZE={machine_nozzle_size}
+
+; This is the place to put slicer purge lines if you haven't set a non-zero
+; variable_start_purge_length to have START_PRINT automatically purge (e.g. if
+; using a Mosaic Palette, which requires the slicer to generate the purge).
 ```
 
 #### End G-code
@@ -341,6 +352,62 @@ Emits an audible tone.
 
 - `P` _(default: `variable_beep_duration`)_ - Duration of tone.
 - `S` _(default: `variable_beep_frequency`)_ - Frequency of tone.
+
+### Draw
+
+Provides convenience methods for extruding along a path and drawing purge lines.
+
+> **Note:** The drawing macros require every `extruder` config(s) to have
+> correct `nozzle_diameter` and `filament_diameter` settings.
+
+#### DRAW_LINE_TO
+
+Extrudes a line of filament at the specified height and width from the current
+coordinate to the supplied XY coordinate.
+
+- `X` _(default: current X position)_ - Absolute X coordinate to draw to.
+- `Y` _(default: current Y position)_ - Absolute Y coordinate to draw to.
+- `HEIGHT` _(default: set via `SET_DRAW_PARAMS`)_ - Height (in mm) used to
+  calculate extrusion volume.
+- `WIDTH` _(default: set via `SET_DRAW_PARAMS`)_ - Extrusion width in mm.
+- `FEEDRATE` _(default: set via `SET_DRAW_PARAMS`)_ - Drawing feedrate in mm/m.
+
+> **Note:** The Z axis position must be set prior to caling this macro. The
+> `HEIGHT` parameter is used only to calculate the extrusion volume.
+
+#### SET_DRAW_PARAMS
+
+Sets the default parameters used by DRAW_LINE_TO. This is helpful in reducing
+`DRAW_LINE_TO` command line lengths (particluarly important when debugging in
+the console).
+
+- `HEIGHT` _(optional; 0.2mm at startup)_ - Height (in mm) used to
+  calculate extrusion volume.
+- `WIDTH` _(optional; nozzle diameter at startup)_ - Extrusion width in mm.
+- `FEEDRATE` _(optional; 1200mm/m at startup)_ - Drawing feedrate in mm/m.
+
+#### DRAW_PURGE_LINE
+
+Moves to a position at the front edge of the first print layer and purges the
+specified length of filament as a line (or rows of lines) in front of the
+supplied print area. If no print area is specified the purge lines are drawn at
+the front edge of the maximum printable area. If no printable area is set it
+defaults to the respective axis limits.
+
+- `PRINT_MIN` _(default: `variable_print_min`)_ - Upper boundary of print.
+- `PRINT_MAX` _(default: `variable_print_max`)_ - Lower boundary of print.
+- `HEIGHT` _(default: 62.5% of nozzle diameter)_ - Extrusion height in mm.
+- `WIDTH` _(default: 125% of nozzle diameter)_ - Extrusion width in mm.
+- `LENGTH` _(default: `variable_start_purge_length`)_ - Length of filament
+  to purge. _The default in `variable_start_purge_length` is also the amount
+  that is automatically purged at print start._
+
+> **Note:** You must set `variable_print_min` and `variable_print_max` if the
+> X and Y axis limits in your config allow your toolhead to move outside the
+> printable area (e.g. for dockable probes or purge buckets).
+
+> **Note:** If your print touches the front edge of the bed it will overlap with
+> with the extrusions from `DRAW_PURGE_LINE`.
 
 ### Fans
 
@@ -590,6 +657,8 @@ probes to the appropriate density (this can dramatically reduce probe times for 
 - `CHAMBER` _(optional)_ - Chamber heater starting temperature.
 - `MESH_MIN` _(optional)_ - Minimum x,y coordinate of the first layer.
 - `MESH_MAX` _(optional)_ - Maximum x,y coordinate of the first layer.
+- `NOZZLE_SIZE` _(default: nozzle_diameter)_ - Nozzle diameter of the primary
+  extruder.
 - `LAYERS` _(optional)_ - Total number of layers in the print.
 
 #### `PRINT_END`
